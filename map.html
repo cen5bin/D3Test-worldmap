@@ -87,7 +87,12 @@
               if (gdp <= 0 || gdp == null) 
                 return 'rgba(128,124,139,0.61)';
               console.log('rgba(120,120,'+ parseInt(scale1(gdp)) +',0.61)');
-                return 'rgba(220,220,'+ parseInt(scale1(gdp/10)) +',0.61)';
+              var tmp0 = (255-parseInt(scale1(gdp/10))) - 20;
+              if (tmp0 < 0) tmp0 = 0;
+              var tmp1 = (255-parseInt(scale1(gdp/10))) + 10;
+              if (tmp1 > 255) tmp1 = 255;
+              return 'rgb('+tmp0 +',0,'+tmp1 +')';
+                // return 'rgba(220,220,'+ (255-parseInt(scale1(gdp/10))) +',0.61)';
                 // else d3.select(this).attr('fill', 'rgba(20,20,'+ parseInt(scale1(parseInt(gdp)))+',0.61');
             })
             .attr('stroke', 'rgba(255,255,255,1)')
