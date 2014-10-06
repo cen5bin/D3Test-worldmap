@@ -14,7 +14,7 @@
 		left:10px;
 		top:100px;
 		width:30px;
-		height:400px;
+		height:510px;
 		background-color:yellow;
 		display:block;
 	}
@@ -40,20 +40,15 @@
 
     
 	d3.select('body').append('div')
-	.attr('id', 'colorbar');
+	.attr('id', 'colorbar').append('svg').attr('width', 30).attr('height',510);
     var height = window.innerHeight;
     var width = window.innerWidth;
     var svg = d3.select('#container').append('svg');
-    // var draw = function(mapdata, gdpdata) {
-   
-    // }
     var features = null;
-
 
     var search = function() {
         var year = document.getElementById('year').value;
         draw(year);
-        
     };
 
     var draw = function(year) {
@@ -78,9 +73,6 @@
                             .translate([width/2, height/2+10]); 
           var path = d3.geo.path()  
                     .projection(projection);  
-
-          // svg.attr('width', width).attr('height', height);
-
 
           var getcolor = function(data) {
             var gdp = null;
@@ -116,15 +108,23 @@
             })
             .attr('stroke', 'rgba(255,255,255,1)')
             .attr('stroke-width', 1);
+
+			var rectData = [];
+			for (var aa = 0; aa < 255; aa++) rectData.push(aa);
+			d3.select('#colorbar').select('svg').attr('width',30).attr('height', 510).selectAll('rect').data(rectData).enter().append('rect')
+				.attr('fill', function(d){
+						var rr = (255-d) * 4;
+						if (rr > 255) rr = 255;
+						return 'rgb('+rr+','+d+',0)';})
+			.attr('x', 0)
+			.attr('y', function(d){return d*2;})
+			.attr('width',30)
+			.attr('height',2)
     };
 
     d3.json("world-countries.json", function(data) {
         d3.json('gdp.json', function(data0) {
           
-
-
-
-
          features = _.filter(data.features, function(value, key) {
             return value.properties.name != 'Antarctica';
           });
@@ -133,16 +133,9 @@
             var tmp = features[i];
             var country = tmp.properties.name;
             tmp.gdps = data0[country];
-            //alert(features[i].aa);
-            //break;
-            //alert(data0);
-            //break;
             if (data0[country] == null)
                console.log(country);
-         //break;
           }
-         //for (var i = 0; i < ge)
-
           var projection = d3.geo.mercator()  
                             .center([0, 0])  
                             .scale(180)
@@ -151,8 +144,6 @@
           var path = d3.geo.path()  
                     .projection(projection);  
 
-
-
           svg.attr('width', width).attr('height', height)
 			  .style('border', 'solid 1px #cccccc');
           svg.selectAll('path').data(features).enter().append('svg:path')
@@ -160,17 +151,10 @@
             .on('mouseover', function(data) {
               d3.select(this).attr('fill', 'rgba(2,2,139,0.61)');
             })
-            // .on('mouseout', function(data) {
-            //   d3.select(this).attr('fill', 'rgba(128,124,139,0.61');
-            // })
             .attr('fill', 'rgba(128,124,139,0.61)')
             .attr('stroke', 'rgba(255,255,255,1)')
             .attr('stroke-width', 1);
-
-
         });
-      
-      
     });
   </script>
 
