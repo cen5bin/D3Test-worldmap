@@ -16,6 +16,7 @@
 <body>
 
   <input type='text' value='' id='year'/> <button onclick='search()'> search</button>
+  <p id='title'>asdsadaadad</p>
   <!-- <button name='aaa'/> -->
   <div id="container"></div>
   <svg>
@@ -26,7 +27,6 @@
     </radialGradient>
   </svg>
   <script type="text/javascript">
-
 
     
 
@@ -46,13 +46,18 @@
     };
 
     var draw = function(year) {
+	//d3.select('#title').text(year+'年全世界各国人均GDP')
+	//.style('text-align', 'center')
+//	.style('font-size', '30px')
+//	.style('margin-top', '-10px');
         var tmp = [];
         var cnt = 0;
         for (var i = 0; i < features.length; i++)
-          if (features[i].gdps != null && features[i].gdps[year] > 0)
+          if (features[i].gdps != null && features[i].gdps[year] != null&& features[i].gdps[year] > 0)
             tmp[cnt++] = features[i].gdps[year];
-        var max = parseInt(d3.max(tmp))/10;
-        var min = parseInt(d3.min(tmp))/10;
+        var max = parseInt(d3.max(tmp));
+        var min = parseInt(d3.min(tmp));
+		console.log(max+'    '+ min);
         
         var scale1 = d3.scale.linear().domain([min, max]).range([0, 255]);
 
@@ -64,36 +69,39 @@
                     .projection(projection);  
 
           // svg.attr('width', width).attr('height', height);
+
+
+          var getcolor = function(data) {
+            var gdp = null;
+              if (data.gdps) gdp = data.gdps[year];
+              //console.log(scale1(gdp));
+              if (gdp <= 0 || gdp == null) return 'black';
+                // return 'rgba(128,124,139,0.61)';
+              // console.log('rgba(120,120,'+ parseInt(scale1(gdp)) +',0.61)');
+              var tmp = parseInt(scale1(gdp));
+              var g = parseInt(255 - tmp);
+              var r = parseInt(tmp * 4);
+			  if (r > 255) r = 255;
+              return 'rgb('+r+','+g+','+0+')';
+          }
+
+
           svg.selectAll('path')
             .attr('d', path)
             .on('mouseover', function(data) {
-              d3.select(this).attr('fill', 'rgba(2,2,139,0.61)');
+              d3.select(this)
+              //d3.select(this).attr('fill', 'rgba(2,2,139,0.61)');
+            .attr('stroke', 'rgba(0,0,0,1)')
+            .attr('stroke-width', 2);
             })
-           /* .on('mouseout', function(data) {
-              // var gdp = null;
-              // if (data.gdp) gdp = data.gdp[year];
-              // if (gdp == -1 || gdp == null) 
-                d3.select(this).attr('fill', 'rgba(128,124,139,0.61');
-                // else d3.select(this).attr('fill', 'rgba(20,20,'+ scale1(gdp)+',0.61');
-            })*/
-            // .attr('fill', 'rgba(128,124,139,0.61)')
+           .on('mouseout', function(data) {
+                //d3.select(this).attr('fill', getcolor(data));
+                d3.select(this)
+            .attr('stroke', 'rgba(255,255,255,1)')
+            .attr('stroke-width', 1);
+            })
             .attr('fill', function(data) {
-              // console.log(data);
-              // d3.select(this).attr('fill', 'rgba(128,124,139,0.61');
-
-              var gdp = null;
-              if (data.gdps) gdp = data.gdps[year];
-              console.log(scale1(gdp));
-              if (gdp <= 0 || gdp == null) 
-                return 'rgba(128,124,139,0.61)';
-              console.log('rgba(120,120,'+ parseInt(scale1(gdp)) +',0.61)');
-              var tmp0 = (255-parseInt(scale1(gdp/10))) - 20;
-              if (tmp0 < 0) tmp0 = 0;
-              var tmp1 = (255-parseInt(scale1(gdp/10))) + 10;
-              if (tmp1 > 255) tmp1 = 255;
-              return 'rgb('+tmp0 +',0,'+tmp1 +')';
-                // return 'rgba(220,220,'+ (255-parseInt(scale1(gdp/10))) +',0.61)';
-                // else d3.select(this).attr('fill', 'rgba(20,20,'+ parseInt(scale1(parseInt(gdp)))+',0.61');
+                  return getcolor(data);
             })
             .attr('stroke', 'rgba(255,255,255,1)')
             .attr('stroke-width', 1);
@@ -134,15 +142,16 @@
 
 
 
-          svg.attr('width', width).attr('height', height);
+          svg.attr('width', width).attr('height', height)
+			  .style('border', 'solid 1px #cccccc');
           svg.selectAll('path').data(features).enter().append('svg:path')
             .attr('d', path)
             .on('mouseover', function(data) {
               d3.select(this).attr('fill', 'rgba(2,2,139,0.61)');
             })
-            .on('mouseout', function(data) {
-              d3.select(this).attr('fill', 'rgba(128,124,139,0.61');
-            })
+            // .on('mouseout', function(data) {
+            //   d3.select(this).attr('fill', 'rgba(128,124,139,0.61');
+            // })
             .attr('fill', 'rgba(128,124,139,0.61)')
             .attr('stroke', 'rgba(255,255,255,1)')
             .attr('stroke-width', 1);
