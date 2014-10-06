@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
   <style type="text/css">
     body {
       display: block;
@@ -8,6 +9,15 @@
       overflow: hidden;
       padding: 0px;
     }
+	#colorbar {
+		position:absolute;
+		left:10px;
+		top:100px;
+		width:30px;
+		height:400px;
+		background-color:yellow;
+		display:block;
+	}
   </style>
   <script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
   <script type="text/javascript" src="http://code.jquery.com/jquery.min.js"></script>
@@ -16,7 +26,7 @@
 <body>
 
   <input type='text' value='' id='year'/> <button onclick='search()'> search</button>
-  <p id='title'>asdsadaadad</p>
+  <p id='title'></p>
   <!-- <button name='aaa'/> -->
   <div id="container"></div>
   <svg>
@@ -29,7 +39,8 @@
   <script type="text/javascript">
 
     
-
+	d3.select('body').append('div')
+	.attr('id', 'colorbar');
     var height = window.innerHeight;
     var width = window.innerWidth;
     var svg = d3.select('#container').append('svg');
@@ -46,10 +57,10 @@
     };
 
     var draw = function(year) {
-	//d3.select('#title').text(year+'年全世界各国人均GDP')
-	//.style('text-align', 'center')
-//	.style('font-size', '30px')
-//	.style('margin-top', '-10px');
+	d3.select('#title').text(year+'年全世界各国人均GDP')
+	.style('text-align', 'center')
+	.style('font-size', '30px')
+	.style('margin-top', '-10px');
         var tmp = [];
         var cnt = 0;
         for (var i = 0; i < features.length; i++)
@@ -163,5 +174,6 @@
     });
   </script>
 
+  <p id='title'>asdsadaadad</p>
 </body>
 </html>
