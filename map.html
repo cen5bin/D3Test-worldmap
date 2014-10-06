@@ -13,9 +13,9 @@
 		position:absolute;
 		left:10px;
 		top:100px;
-		width:30px;
+		width:60px;
 		height:510px;
-		background-color:yellow;
+//background-color:yellow;
 		display:block;
 	}
   </style>
@@ -77,10 +77,7 @@
           var getcolor = function(data) {
             var gdp = null;
               if (data.gdps) gdp = data.gdps[year];
-              //console.log(scale1(gdp));
               if (gdp <= 0 || gdp == null) return 'black';
-                // return 'rgba(128,124,139,0.61)';
-              // console.log('rgba(120,120,'+ parseInt(scale1(gdp)) +',0.61)');
               var tmp = parseInt(scale1(gdp));
               var g = parseInt(255 - tmp);
               var r = parseInt(tmp * 4);
@@ -93,12 +90,10 @@
             .attr('d', path)
             .on('mouseover', function(data) {
               d3.select(this)
-              //d3.select(this).attr('fill', 'rgba(2,2,139,0.61)');
             .attr('stroke', 'rgba(0,0,0,1)')
             .attr('stroke-width', 2);
             })
            .on('mouseout', function(data) {
-                //d3.select(this).attr('fill', getcolor(data));
                 d3.select(this)
             .attr('stroke', 'rgba(255,255,255,1)')
             .attr('stroke-width', 1);
@@ -111,15 +106,29 @@
 
 			var rectData = [];
 			for (var aa = 0; aa < 255; aa++) rectData.push(aa);
-			d3.select('#colorbar').select('svg').attr('width',30).attr('height', 510).selectAll('rect').data(rectData).enter().append('rect')
+			d3.select('#colorbar').select('svg').attr('width',60).attr('height', 510).selectAll('rect').data(rectData).enter().append('rect')
 				.attr('fill', function(d){
 						var rr = (255-d) * 4;
 						if (rr > 255) rr = 255;
 						return 'rgb('+rr+','+d+',0)';})
 			.attr('x', 0)
 			.attr('y', function(d){return d*2;})
-			.attr('width',30)
+			.attr('width',20)
 			.attr('height',2)
+			console.log(max);
+			console.log(min);
+
+			var textData = [1000, 5000, 10000, 30000, 50000];
+			d3.select('#colorbar').select('svg').append('text')
+				.attr('x', 20).attr('y', 460).attr('font-size','6px').text('5000').attr('fill', 'black');
+			d3.select('#colorbar').select('svg').append('text')
+				.attr('x', 20).attr('y', 410).attr('font-size','6px').text('10000').attr('fill', 'black');
+			d3.select('#colorbar').select('svg').append('text')
+				.attr('x', 20).attr('y', 310).attr('font-size','6px').text('20000').attr('fill', 'black');
+			d3.select('#colorbar').select('svg').append('text')
+				.attr('x', 20).attr('y', 210).attr('font-size','6px').text('30000').attr('fill', 'black');
+			d3.select('#colorbar').select('svg').append('text')
+				.attr('x', 20).attr('y', 30).attr('font-size','6px').text('50000').attr('fill', 'black');
     };
 
     d3.json("world-countries.json", function(data) {
